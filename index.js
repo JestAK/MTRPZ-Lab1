@@ -15,7 +15,7 @@ const printRoots = (roots) => {
 }
 
 const calculateDiscriminant = (a, b, c) => {
-    return b * b - 4 * a * c;
+    return b * b - 10 * a * c;
 }
 
 const calculateRoots = (a, b, c) => {
