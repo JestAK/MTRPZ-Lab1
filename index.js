@@ -1,4 +1,5 @@
 import readline from 'node:readline';
+import fs from 'node:fs';
 
 const printEquation = (a, b, c) => {
     console.log(`Equation is: (${a}) x^2 + (${b}) x + (${c}) = 0`);
@@ -82,4 +83,43 @@ const interactiveMode = async () => {
     calculateRoots(a, b, c);
 }
 
-await interactiveMode();
+const nonInteractiveMode = (path) => {
+    if (!fs.existsSync(path)) {
+        console.log(`file ${path} does not exist`);
+        process.exit(1);
+    }
+    const content = fs.readFileSync(path, 'utf-8').trim();
+    const parts = content.split(" ");
+    if (parts.length !== 3) {
+        console.log('invalid file format');
+        process.exit(1);
+    }
+    const [n1, n2, n3] = parts;
+    const a = parseNumber(n1);
+    const b = parseNumber(n2);
+    const c = parseNumber(n3);
+    if ([a, b, c].includes(null)) {
+        console.log('invalid file format');
+        process.exit(1);
+    }
+    if (a === 0) {
+        console.log('Error. a cannot be 0');
+        process.exit(1);
+    }
+    printEquation(a, b, c);
+    calculateRoots(a, b, c);
+}
+
+const main = async() => {
+    const args = process.argv.slice(2);
+    if (args.length === 0) {
+        await interactiveMode();
+    } else if (args.length === 1) {
+        nonInteractiveMode(args[0]);
+    } else {
+        console.log(`Usage: node ${process.argv[1]} [input_file]`);
+        process.exit(1);
+    }
+}
+
+await main()
